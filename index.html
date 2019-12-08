@@ -319,7 +319,7 @@ function glyph3d(localString){
 function action3d(localCommand){
     if(localCommand >= 0600 && localCommand <= 0677){//shapes 
         if(!(localCommand == 0207)){
-            drawGlyph(currentTable[localCommand]);    	    
+            glyph3d(newGVM.hypercube[localCommand]);    	    
         }
     }
     if(localCommand == 0207){
