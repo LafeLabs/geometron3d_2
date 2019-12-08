@@ -145,6 +145,8 @@ document.getElementById("actioninput").onkeydown = function(a) {
 
         spellGVM.glyph = spellGVM.hypercube[spellGVM.address] + "0207,";
         spellGVM.saveGlyph();
+        newGVM.glyph = spellGVM.glyph;
+        newGVM.saveGlyph();
         newGVM.address = spellGVM.address;
         newGVM.hypercube = spellGVM.hypercube;
         redraw3d();
@@ -296,14 +298,32 @@ document.getElementById("spellinput").onchange = function() {
 
 function savejson(){
     
-    var glyphArray = newGVM.glyph.split(",");
-    var cleanGlyph = "";
-    for(var index = 0;index < glyphArray.length;index++) {
-        if(glyphArray[index] != "0207" && glyphArray[index].length> 1){
-            cleanGlyph += glyphArray[index] + ",";
+    if(newGVM.address == 0600){
+        var glyphArray = newGVM.glyph.split(",");
+        var cleanGlyph = "";
+        for(var index = 0;index < glyphArray.length;index++) {
+            if(glyphArray[index] != "0207" && glyphArray[index].length> 1){
+                cleanGlyph += glyphArray[index] + ",";
+            }
         }
+        currentjson.glyph = cleanGlyph;
     }
-    currentjson.glyph = cleanGlyph;
+    if(newGVM.address > 0600 && newGVM.address <= 0607){
+        
+        currentjson.shapes = [];
+
+        for(var index = 0600;index < 0610;index++){
+            currentjson.shapes.push("0" + index.toString(8) + ":" + spellGVM.hypercube[index]);
+        }        
+        for(var index = 0220;index < 0250;index++){
+            currentjson.shapes.push("0" + index.toString(8) + ":" + spellGVM.hypercube[index]);
+        }
+        for(var index = 01220;index < 01250;index++){
+            currentjson.shapes.push("0" + index.toString(8) + ":" + spellGVM.hypercube[index]);
+        }
+        newGVM.hypercube = spellGVM.hypercube;
+        
+    }    
     
 
     var httpc = new XMLHttpRequest();
