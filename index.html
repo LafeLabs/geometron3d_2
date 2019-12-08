@@ -57,9 +57,14 @@
         <a href = "../">
             <img style = "width:50px;" src = "iconsymbols/uplink.svg"/>
         </a>
-        <a href = "editor.php">
-            <img style = "width:50px;" src = "iconsymbols/edit.svg"/>
-        </a>    
+        <span class = "editbutton button" id = "edit0">0</span>
+        <span class = "editbutton button" id = "edit1">1</span>
+        <span class = "editbutton button" id = "edit2">2</span>
+        <span class = "editbutton button" id = "edit3">3</span>
+        <span class = "editbutton button" id = "edit4">4</span>
+        <span class = "editbutton button" id = "edit5">5</span>
+        <span class = "editbutton button" id = "edit6">6</span>
+        <span class = "editbutton button" id = "edit7">7</span>
 
 <!--        <img id = "savebutton" class = "button" style = "width:50px;" src = "iconsymbols/save.svg"/>-->
 
@@ -69,16 +74,19 @@
         <input id = "spellinput"/>
     </div>
     <div id = "controldiv">
-    <table id = "controltable">
-        <tr><td>Action:</td><td><input id = "actioninput"/></td></tr>
-        <tr><td>Address:</td><td><input id ="addressinput"/></td></tr>
-    </table>
+        <table id = "controltable">
+            <tr><td>Action:</td><td><input id = "actioninput"/></td></tr>
+            <tr><td>Address:</td><td><input id ="addressinput"/></td></tr>
+        </table>
 
     </div>        
     
 </div>
 
 <script>
+
+editbuttons = document.getElementsByClassName("editbutton");
+editvalue = 0;
 
 landscape = false;
 
@@ -138,6 +146,8 @@ document.getElementById("actioninput").onkeydown = function(a) {
 
     if(charCode == 046){
         //up arrow: prev symbol
+        editbuttons[editvalue].style.backgroundColor = "white";
+
         spellGVM.saveGlyph();
         newGVM.saveGlyph();
         spellGVM.address++;
@@ -145,6 +155,7 @@ document.getElementById("actioninput").onkeydown = function(a) {
             spellGVM.address = 0600;
         }
         newGVM.address = spellGVM.address;
+        editvalue = spellGVM.address - 0600;
 
         spellGVM.glyph = spellGVM.hypercube[spellGVM.address] + "0207,";
         newGVM.glyph = spellGVM.glyph;
@@ -156,6 +167,8 @@ document.getElementById("actioninput").onkeydown = function(a) {
     }
     if(charCode == 050){
         //down arrow: next symbol
+        editbuttons[editvalue].style.backgroundColor = "white";
+    
         spellGVM.saveGlyph();
         newGVM.saveGlyph();
         spellGVM.address--;
@@ -164,6 +177,7 @@ document.getElementById("actioninput").onkeydown = function(a) {
         }
         
         newGVM.address = spellGVM.address;
+        editvalue = spellGVM.address - 0600;
         
         spellGVM.glyph = spellGVM.hypercube[spellGVM.address] + "0207,";
         newGVM.glyph = spellGVM.glyph;
@@ -209,9 +223,9 @@ document.getElementById("actioninput").onkeypress = function(a) {
 }
 
 
-buttonSize = marginWidth/8;
+buttonSize = marginWidth/6;
 
-controlbuttons = [010,020,021,022,023,0700,0701,0702,0703,0704,0705,0601,0602,0603,0604,0605,0606,0607,];
+controlbuttons = [0700,0701,0702,0703,0704,0705,0601,0602,0603,0604,0605,0606,0607,020,010,021];
 
 function loadcontrolbuttons(){
     
@@ -244,6 +258,7 @@ function loadcontrolbuttons(){
             document.getElementById("spellinput").value = currentjson.glyph;
             document.getElementById("spellinput").style.width = 0.8*currentjson.glyph.length.toString() + "em";
             redraw3d();
+            
         }
 
 
@@ -354,6 +369,8 @@ function redraw3d(){
 
     glyph3d(newGVM.glyph);
     document.getElementById("addressinput").value = "0" + newGVM.address.toString(8);
+    
+    editbuttons[editvalue].style.backgroundColor = "blue";
 }
 
 function glyph3d(localString){
@@ -533,7 +550,18 @@ input{
     right:0px;
     bottom:0px;
 }
-
+#addressinput{
+    width:4em;
+}
+.editbutton{
+    width:50px;
+    font-size:30px;
+    height:50px;
+    border:solid;
+    border-radius:10px;
+    font-family:courier;
+    text-align:center;
+}
 </style>
 </body>
 </html>
