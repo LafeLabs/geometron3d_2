@@ -23,7 +23,12 @@
     <script src="data/font.js"></script>
     <script src="data/keyboard.js"></script>
     <script src="data/symbols3d.js"></script>
-<link href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA/wAAAAD//wAA/wAAAAD/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADMzMzQREREAAzMzRBEREQAAMzNEQREQAAAzNERBERAAAAM0REQRAAAAAEREREAAAAAAREREQAAAAAACIiIAAAAAAAIiIgAAAAAAACIgAAAAAAAAIiAAAAAAAAACAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAACAAQAAwAEAAOADAADgAwAA8AcAAPgPAAD4DwAA/B8AAPwfAAD+PwAA/j8AAP9/AAD//wAA" rel="icon" type="image/x-icon" />
+
+<link href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA/wAAAAD/AAAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAiIAAAAAARAAIAAAAAABEAAgAAAAAAABACAAAAAAAAAQIAAAAAAwAAEgAAADAzMzMwMzMzMwMAAAIQAAAwAAAAAgEAAAAAAAACABAAAAAAAAIAAQAAAAAAAgAAEQAAAAACAAARAAAAACIgAAAAAAAAAgAAAAD+/wAA/H8AAM7/AADO/wAA9v8AAPr/AAC8/QAAAAAAAL59AAD+vwAA/t8AAP7vAAD+8wAA/vMAAPx/AAD+/wAA" rel="icon" type="image/x-icon" />
+
+<script src="https://cdn.jsdelivr.net/npm/x3dom@1.7.2/x3dom.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/x3dom@1.7.2/x3dom.css">
+
 </head>
 <body> 
 
@@ -37,12 +42,10 @@
 
 <div id = "square">
     <canvas id = "invisiblecanvas"></canvas>
-    <div id = "x3dbox">
-        <x3d id = "mainx3d">
-            <scene id = "main">
-            </scene>
-        </x3d>
-    </div>
+    <x3d id = "mainx3d">
+        <scene id = "main">
+        </scene>
+    </x3d>
 </div>
 
 <div id = "margin">            
@@ -157,6 +160,7 @@ document.getElementById("actioninput").onkeydown = function(a) {
     savejson();
     document.getElementById("spellinput").value = currentjson.glyph;
     document.getElementById("spellinput").style.width = 0.8*currentjson.glyph.length.toString() + "em";
+    redraw3d();
 
 }
 
@@ -182,6 +186,7 @@ document.getElementById("actioninput").onkeypress = function(a) {
     document.getElementById("spellinput").value = currentjson.glyph;
     document.getElementById("spellinput").style.width = 0.8*currentjson.glyph.length.toString() + "em";
 
+    redraw3d();
 }
 
 
@@ -219,6 +224,7 @@ function loadcontrolbuttons(){
             
             document.getElementById("spellinput").value = currentjson.glyph;
             document.getElementById("spellinput").style.width = 0.8*currentjson.glyph.length.toString() + "em";
+            redraw3d();
         }
 
 
@@ -291,6 +297,110 @@ function savejson(){
     httpc.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     httpc.send("data="+encodeURIComponent(JSON.stringify(currentjson,null,"  "))+"&filename=data/currentjson.txt");//send text to filesaver.php
 
+}
+
+
+x_3d = 0.0;
+y_3d = 0.0;
+z_3d = 0.0;
+side3d = 2;
+solidColor = "1 0 0";
+currentTrans = 0.0;
+
+main = document.getElementById("main");
+
+/*
+var news = document.createElement("shape");
+var newt = document.createElement("transform");
+main.appendChild(newt);
+newt.setAttribute("translation",x_3d.toString() + " " + y_3d.toString() + " " + z_3d.toString() );
+var newt2 = document.createElement("transform");
+newt.appendChild(newt2);
+newt2.setAttribute("scale",(0.5*side3d).toString() + " " + (0.5*side3d).toString() + " " + (0.5*side3d).toString());
+newt2.appendChild(news);
+var newa = document.createElement("appearance");
+news.appendChild(newa);
+var newm = document.createElement("material");
+newm.setAttribute("diffuseColor",solidColor);
+newm.setAttribute("transparency",currentTrans);
+newa.appendChild(newm);
+var newb = document.createElement("sphere");
+news.appendChild(newb);
+*/
+
+
+function redraw3d(){
+    main.innerHTML = "";
+    x_3d = 0.0;
+    y_3d = 0.0;
+    z_3d = 0.0;
+
+    glyph3d(newGVM.glyph);
+}
+
+function glyph3d(localString){
+    var tempArray = localString.split(',');
+    for(var index = 0;index < tempArray.length;index++){
+        action3d(parseInt(tempArray[index],8));
+    }
+}
+
+function action3d(localCommand){
+    if(localCommand >= 0600 && localCommand <= 0677){//shapes 
+        if(!(localCommand == 0207)){
+            drawGlyph(currentTable[localCommand]);    	    
+        }
+    }
+    if(localCommand == 0700){
+        x_3d += 1;
+        solidColor = "1 0 0";
+        drawsphere();
+    }
+    if(localCommand == 0701){
+        x_3d -= 1;
+        solidColor = "1 0 0";
+        drawsphere();
+    }
+    if(localCommand == 0702){
+        y_3d += 1;
+        solidColor = "0 1 0";
+        drawsphere();
+    }
+    if(localCommand == 0703){
+        y_3d -= 1;
+        solidColor = "0 1 0";
+        drawsphere();
+    }
+    if(localCommand == 0704){
+        z_3d += 1;
+        solidColor = "0 0 1";
+        drawsphere();
+    }
+    if(localCommand == 0705){
+        z_3d -= 1;
+        solidColor = "0 0 1";
+        drawsphere();
+    }
+    
+}
+
+function drawsphere(){
+    var news = document.createElement("shape");
+    var newt = document.createElement("transform");
+    main.appendChild(newt);
+    newt.setAttribute("translation",x_3d.toString() + " " + y_3d.toString() + " " + z_3d.toString() );
+    var newt2 = document.createElement("transform");
+    newt.appendChild(newt2);
+    newt2.setAttribute("scale",(0.5*side3d).toString() + " " + (0.5*side3d).toString() + " " + (0.5*side3d).toString());
+    newt2.appendChild(news);
+    var newa = document.createElement("appearance");
+    news.appendChild(newa);
+    var newm = document.createElement("material");
+    newm.setAttribute("diffuseColor",solidColor);
+    newm.setAttribute("transparency",currentTrans);
+    newa.appendChild(newm);
+    var newb = document.createElement("sphere");
+    news.appendChild(newb);
 }
 </script>
 <style>
@@ -378,16 +488,9 @@ body{
 #mainx3d{
     position:absolute;
     left:0px;
+    top:0px;
     right:0px;
     bottom:0px;
-    top:0px;
-}
-#x3dbox{
-    position:absolute;
-    left:100px;
-    right:100px;
-    top:40px;
-    bottom:100px;
 }
 
 </style>
