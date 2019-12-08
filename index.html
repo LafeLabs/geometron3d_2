@@ -33,6 +33,7 @@
 <body> 
 
     <!--
+    geometron 3d for trash robot voxel programming
         symbol.html:
 
         this is a custom language, specific to this node in the Universe of Things.  Hypercube BUILDS languages. This is apure implementation of 
@@ -60,7 +61,8 @@
             <img style = "width:50px;" src = "iconsymbols/edit.svg"/>
         </a>    
 
-        <img id = "savebutton" class = "button" style = "width:50px;" src = "iconsymbols/save.svg"/>
+<!--        <img id = "savebutton" class = "button" style = "width:50px;" src = "iconsymbols/save.svg"/>-->
+
     </div>    
     <div id = "spelldiv">
         <canvas id = "spellcanvas"></canvas>
@@ -177,7 +179,7 @@ document.getElementById("actioninput").onkeypress = function(a) {
 
 buttonSize = marginWidth/8;
 
-controlbuttons = [010,020,021,0700,0701,0702,0703,0704,0705,0600,0601,0602,0603,0604,0605,0606,0607,];
+controlbuttons = [010,020,021,022,023,0700,0701,0702,0703,0704,0705,0601,0602,0603,0604,0605,0606,0607,];
 
 function loadcontrolbuttons(){
     
@@ -218,9 +220,9 @@ function loadcontrolbuttons(){
 
 
 
-document.getElementById("savebutton").onclick = function() {
+//document.getElementById("savebutton").onclick = function() {
     //save an x3d file for import to blender and export to .stl
-}
+//}
 
 var httpc = new XMLHttpRequest();
 httpc.onreadystatechange = function() {
@@ -263,6 +265,7 @@ document.getElementById("spellinput").onchange = function() {
     newGVM.drawGlyph(newGVM.glyph);
     spellGVM.spellGlyph(newGVM.glyph);
     savejson();
+//    redraw3d();
 
 }
 
@@ -319,6 +322,9 @@ function action3d(localCommand){
             drawGlyph(currentTable[localCommand]);    	    
         }
     }
+    if(localCommand == 0207){
+        drawcursor();
+    }
     if(localCommand == 0700){
         x_3d += side3d;
         solidColor = "1 0 0";
@@ -370,6 +376,26 @@ function drawsphere(){
     var newb = document.createElement("sphere");
     news.appendChild(newb);
 }
+
+function drawcursor(){
+    var news = document.createElement("shape");
+    var newt = document.createElement("transform");
+    main.appendChild(newt);
+    newt.setAttribute("translation",x_3d.toString() + " " + y_3d.toString() + " " + z_3d.toString() );
+    var newt2 = document.createElement("transform");
+    newt.appendChild(newt2);
+    newt2.setAttribute("scale",(side3d).toString() + " " + (side3d).toString() + " " + (side3d).toString());
+    newt2.appendChild(news);
+    var newa = document.createElement("appearance");
+    news.appendChild(newa);
+    var newm = document.createElement("material");
+    newm.setAttribute("diffuseColor","0 0 1");
+    newm.setAttribute("transparency","0.85");
+    newa.appendChild(newm);
+    var newb = document.createElement("box");
+    news.appendChild(newb);
+}
+
 </script>
 <style>
 body{
