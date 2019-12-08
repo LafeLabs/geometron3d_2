@@ -210,16 +210,21 @@ document.getElementById("actioninput").onkeypress = function(a) {
 
     var charCode = a.keyCode || a.which;
 
-    localCursorAction = parseInt(newGVM.hypercube[charCode],8);     
-    newGVM.cursorAction(localCursorAction);   
-    spellGVM.spellGlyph(newGVM.glyph);    
-    this.value = "";
-    newGVM.saveGlyph();
+    localCursorAction = parseInt(newGVM.hypercube[charCode],8);   
+    if(localCursorAction != newGVM.address){
+        //this if statement should stop infinite loops in many cases
+        newGVM.cursorAction(localCursorAction);   
+        spellGVM.spellGlyph(newGVM.glyph);    
+        this.value = "";
+        newGVM.saveGlyph();
 
-    document.getElementById("spellinput").value = currentjson.glyph;
-    document.getElementById("spellinput").style.width = 0.8*currentjson.glyph.length.toString() + "em";
+        document.getElementById("spellinput").value = currentjson.glyph;
+        document.getElementById("spellinput").style.width = 0.8*currentjson.glyph.length.toString() + "em";
+        redraw3d();
+    }
 
-    redraw3d();
+
+    
 }
 
 
@@ -248,7 +253,10 @@ function loadcontrolbuttons(){
                 newGVM.cursorAction(thisaction + 01000);
             }
             else{
-                newGVM.cursorAction(thisaction);
+                if(thisaction != newGVM.address){
+                    //stop infinite loops in many cases
+                    newGVM.cursorAction(thisaction);
+                }
             }
                     
             spellGVM.spellGlyph(newGVM.glyph);
