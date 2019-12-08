@@ -69,9 +69,13 @@
         <input id = "spellinput"/>
     </div>
     <div id = "controldiv">
+    <table id = "controltable">
+        <tr><td>Action:</td><td><input id = "actioninput"/></td></tr>
+        <tr><td>Address:</td><td><input id ="addressinput"/></td></tr>
+    </table>
 
     </div>        
-    <input id = "actioninput"/>
+    
 </div>
 
 <script>
@@ -111,14 +115,12 @@ newGVM.importbytecode(font);
 newGVM.importbytecode(keyboard);
 newGVM.importbytecode(symbols3d);
 
-
 var spellGVM = new GVM(10,100,50,-Math.PI/2,document.getElementById("spellcanvas"),200,200,hypercube);
 spellGVM.importbytecode(font);
 spellGVM.importbytecode(keyboard);
 spellGVM.importbytecode(symbols3d);
 
 spellGVM.hypercube = newGVM.hypercube;
-
 
 document.getElementById("actioninput").onkeydown = function(a) {
     var charCode = a.keyCode || a.which;
@@ -136,11 +138,30 @@ document.getElementById("actioninput").onkeydown = function(a) {
 
     if(charCode == 046){
         //up arrow: prev symbol
+        spellGVM.address++;
+        if(spellGVM.address > 0607) {
+            spellGVM.address = 0600;
+        }
 
+        spellGVM.glyph = spellGVM.hypercube[spellGVM.address] + "0207,";
+        spellGVM.saveGlyph();
+        newGVM.address = spellGVM.address;
+        newGVM.hypercube = spellGVM.hypercube;
+        redraw3d();
+        
     }
     if(charCode == 050){
         //down arrow: next symbol
- 
+        spellGVM.address--;
+        if(spellGVM.address < 0600) {
+            spellGVM.address = 0607;
+        }
+
+        spellGVM.glyph = spellGVM.hypercube[spellGVM.address] + "0207,";
+        spellGVM.saveGlyph();
+        newGVM.address = spellGVM.address;
+        newGVM.hypercube = spellGVM.hypercube;
+        redraw3d(); 
     }
 
     spellGVM.spellGlyph(newGVM.glyph,spellGVM);    
@@ -245,6 +266,10 @@ httpc.onreadystatechange = function() {
 
         newGVM.drawGlyph(newGVM.glyph);
         spellGVM.spellGlyph(newGVM.glyph);
+        
+        newGVM.address = 0600;
+        spellGVM.address = 0600;
+        
         document.getElementById("spellinput").value = currentjson.glyph;
         document.getElementById("spellinput").style.width = 0.8*currentjson.glyph.length.toString() + "em";
         
@@ -307,6 +332,7 @@ function redraw3d(){
     z_3d = 0.0;
 
     glyph3d(newGVM.glyph);
+    document.getElementById("addressinput").value = "0" + newGVM.address.toString(8);
 }
 
 function glyph3d(localString){
@@ -401,6 +427,9 @@ function drawcursor(){
 body{
     overflow:hidden;
 }
+input{
+    font-family:courier;
+}
 #square{
     position:absolute;
     left:0px;
@@ -453,9 +482,6 @@ body{
 }
 #actioninput{
     width:1em;
-    position:absolute;
-    right:0px;
-    bottom:0px;
 }
 
 .button:hover{
