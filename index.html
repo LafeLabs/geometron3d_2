@@ -56,24 +56,9 @@
         <a href = "../">
             <img style = "width:50px;" src = "iconsymbols/uplink.svg"/>
         </a>
-        <a href = "shapetableeditor.html">
-            <img style = "width:50px;" src = "iconsymbols/table.svg"/>
-        </a>               
-        <a href = "styleeditor.html">
-            <img style = "width:50px;" src = "iconsymbols/style.svg"/>
-        </a>
-        <a href = "symbolfeed.html">
-            <img style = "width:50px;" src = "iconsymbols/feed.svg"/>
-        </a>
-        <a href = "setup.html">
-            <img style = "width:50px;" src = "iconsymbols/setup.svg"/>
-        </a>    
         <a href = "editor.php">
             <img style = "width:50px;" src = "iconsymbols/edit.svg"/>
         </a>    
-
-        <img id = "modebutton" class = "button" style = "width:50px;background-color:#00ff00" src = "iconsymbols/cursor.svg"/>
-
 
         <img id = "savebutton" class = "button" style = "width:50px;" src = "iconsymbols/save.svg"/>
     </div>    
@@ -192,7 +177,7 @@ document.getElementById("actioninput").onkeypress = function(a) {
 
 buttonSize = marginWidth/8;
 
-controlbuttons = [010,020,021,0700,0701,0702,0703,0704,0705];
+controlbuttons = [010,020,021,0700,0701,0702,0703,0704,0705,0600,0601,0602,0603,0604,0605,0606,0607,];
 
 function loadcontrolbuttons(){
     
@@ -310,24 +295,6 @@ currentTrans = 0.0;
 
 main = document.getElementById("main");
 
-/*
-var news = document.createElement("shape");
-var newt = document.createElement("transform");
-main.appendChild(newt);
-newt.setAttribute("translation",x_3d.toString() + " " + y_3d.toString() + " " + z_3d.toString() );
-var newt2 = document.createElement("transform");
-newt.appendChild(newt2);
-newt2.setAttribute("scale",(0.5*side3d).toString() + " " + (0.5*side3d).toString() + " " + (0.5*side3d).toString());
-newt2.appendChild(news);
-var newa = document.createElement("appearance");
-news.appendChild(newa);
-var newm = document.createElement("material");
-newm.setAttribute("diffuseColor",solidColor);
-newm.setAttribute("transparency",currentTrans);
-newa.appendChild(newm);
-var newb = document.createElement("sphere");
-news.appendChild(newb);
-*/
 
 
 function redraw3d(){
@@ -392,7 +359,7 @@ function drawsphere(){
     newt.setAttribute("translation",x_3d.toString() + " " + y_3d.toString() + " " + z_3d.toString() );
     var newt2 = document.createElement("transform");
     newt.appendChild(newt2);
-    newt2.setAttribute("scale",(0.5*side3d).toString() + " " + (0.5*side3d).toString() + " " + (0.5*side3d).toString());
+    newt2.setAttribute("scale",(side3d).toString() + " " + (side3d).toString() + " " + (side3d).toString());
     newt2.appendChild(news);
     var newa = document.createElement("appearance");
     news.appendChild(newa);
